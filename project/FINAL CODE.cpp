@@ -5,7 +5,7 @@
 #include<time.h>
 using namespace std;
 class parcel;
-map < string, string > map_ID_OTP;
+map < string, pair<string,string>> map_ID_OTP_Email_id;
 map < string, parcel > map_ID_parcel;
 class Address
 {
@@ -87,7 +87,7 @@ public:
 	    //stringstream ss;
 	    //ss<<Address_of_Delivery.Room_no;
 	    // string rno = ss.rno();
-	    string str = to_string (Address_of_Delivery.getRoom_no ());
+	    string str = to_string (Address_of_Delivery.getRoom_no() );
 	    if (word == str)
 	      {
 		f >> word;
@@ -139,9 +139,15 @@ public:
 	  "curl -s --url 'smtps://smtp.gmail.com:465' --ssl-reqd   --mail-from 'iitjcouriermanagementsystem@gmail.com' --mail-rcpt '"
 	  + email_id +
 	  "'   --upload-file message.txt --user 'iitjcouriermanagementsystem@gmail.com:vvy616263' --insecure";
-
+	
 	const char *command = str.c_str ();
 	system (command);
+	map_ID_OTP_Email_id[Parcel_Id]=make_pair(get_auth_id(),email_id); 
+	
+	 //{ get_auth_id(),email_id}
+ //   map_ID_OTP_Email_id[Parcel_Id].insert(make_pair(get_auth_id(),email_id));
+//m.insert(make_pair("Noob", map<int, int>())); 
+ //   m["Noob"].insert(make_pair(0, 5)); 
 	//cout<<message<<endl; 
 	return true;
       }
@@ -158,7 +164,7 @@ public:
 
   void getaddress ()
   {
-      cout << "Hostel-" << Address_of_Delivery.
+      cout << "Hostel-: " << Address_of_Delivery.
       getHostel () << " Room-no--: " << Address_of_Delivery.
       getRoom_no () << endl;
   }
@@ -263,10 +269,7 @@ function_of_case1 ()
 	      map_ID_parcel[id] = input_parcel;
 	      string otp = input_parcel.get_auth_id ();
 	      //map_ID_OTP[id]=otp;
-	      map_ID_OTP.insert (
-				  {
-				  id, otp}
-	      );
+	      
 	      cout <<
 		"\t\t \n-----------Parcel is Successfully collected----------\n"
 		<< endl;
@@ -289,7 +292,7 @@ function_of_case1 ()
 void
 function_of_case2 ()
 {
-  if (map_ID_OTP.size () == 0)
+  if (map_ID_OTP_Email_id.size () == 0)
     {
       cout << "No Parcels are available to be collected.\n";
       return;
@@ -297,8 +300,8 @@ function_of_case2 ()
   cout << "ENTER PARCEL ID\n";
   string temp;
   cin >> temp;
-  auto itr = map_ID_OTP.find (temp);
-  if (itr != map_ID_OTP.end ())
+  auto itr = map_ID_OTP_Email_id.find (temp);
+  if (itr != map_ID_OTP_Email_id.end ())
     {
       int tryit = 3;
       while (tryit > 0)
@@ -306,15 +309,39 @@ function_of_case2 ()
 	  string totp;
 	  cout << "ENTER OTP\n";
 	  cin >> totp;
-	  if (itr->second == totp)
+	  if (itr->second.first == totp)
 	    {
 	      cout << "\t\tYou have been successfully verified\n"
 		<< "\t\tYou can now collect your parcel\n";
-	      // delay(3000);
-	      map_ID_OTP.erase (temp);
+	    
+	     
+	      
+	    fstream fio;
+	fio.open ("message.txt", ios::out);
+	string message = "Your Parcel with Id " + itr->first + " , has been successfully Checkout. \n This is automatically genrated e-mail, Don't reply to it. "; 
+	
+	
+	fio << "From:" << "IITJ Courier Management System" <<
+	  "<iitjcouriermanagement@gmail.com>" << endl << "To:" <<
+	  "'Dear Customer' <" << itr->second.second << ">" << endl <<
+	  "Subject: Parcel CheckOut\n" << message << endl;
+	fio.close ();
+	string str =
+	  "curl -s --url 'smtps://smtp.gmail.com:465' --ssl-reqd   --mail-from 'iitjcouriermanagementsystem@gmail.com' --mail-rcpt '"
+	  + itr->second.second +
+	  "'   --upload-file message.txt --user 'iitjcouriermanagementsystem@gmail.com:vvy616263' --insecure";
+	
+	const char *command = str.c_str ();
+	system (command);
+	      
+	      
+	      
+	  /***********************************  Work is still Pending  *********************************************/   
+	      map_ID_OTP_Email_id.erase (temp);
 	      map_ID_parcel.erase (temp);
 	      cout << "\t\tPARCEL with ID " << temp <<
-		" is deleted from Database" << endl;
+		" is deleted from Database\n" << endl;
+		break;
 	    }
 	  else
 	    {
@@ -418,4 +445,3 @@ main ()
     }
   return 0;
 }
-
