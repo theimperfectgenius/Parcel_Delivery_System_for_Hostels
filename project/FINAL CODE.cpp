@@ -5,9 +5,11 @@
 #include<time.h>
 using namespace std;
 class parcel;
-map < string, pair<string,string>> map_ID_OTP_Email_id;
-map < string, parcel > map_ID_parcel;
-class Address
+map < string, pair<string,string>> map_ID_OTP_Email_id; //used for storing parcel-id, OTP, email-id
+map < string, parcel > map_ID_parcel;   // used for storing parcel-id with object of class parcel
+/* Address class for address of parcel
+Contains Data Member: Hostel and Room No.*/
+class Address 
 {
   string Hostel;
   int Room_no;
@@ -32,13 +34,14 @@ class Address
     Hostel = hostel;
     Room_no = room;
   }
-  void ChangeAddress (string hostel, int room)
+  void ChangeAddress (string hostel, int room) 
   {
     Hostel = hostel;
     Room_no = room;
   }
 };
-
+/* Parcel Class for parcel details
+Data Members: Parcel ID, OTP key, Object of Address class*/
 class parcel
 {
 
@@ -170,7 +173,8 @@ public:
   }
 
 };
-
+/* Class Delivery Man for delivery man details
+Data Member: Delivery man's Company and his delivery ID*/
 class Delivery_Man
 {
 private:
@@ -195,7 +199,7 @@ public:
     return Company_Name;
   }
   bool verify_id ()
-  {				// file stream
+  {				
     fstream f;
     int flag = 0;
     string word, filename;
@@ -222,7 +226,7 @@ public:
   }
 
 };
-
+/*Function for 1 option of menu driven program  */
 void
 function_of_case1 ()
 {
@@ -288,6 +292,8 @@ function_of_case1 ()
     }
 
 }
+
+/*Function for 2 option of menu driven program  */
 
 void
 function_of_case2 ()
@@ -365,6 +371,8 @@ function_of_case2 ()
 
 }
 
+/*Function for 3 option of menu driven program  */
+
 void
 function_of_case3 ()
 {
@@ -403,7 +411,7 @@ int
 main ()
 {
   int c;
-
+			/* Menu Driven Program */
   cout << "\t\t\tWelcome to IITJ Courier Management System\n";
   while (1)
     {	
